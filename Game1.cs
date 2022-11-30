@@ -8,7 +8,12 @@ namespace summative
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-
+        enum Screen
+        {
+            Intro,
+            Middle,
+            End
+        }
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
