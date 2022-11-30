@@ -40,7 +40,7 @@ namespace summative
             gPW =(_graphics.PreferredBackBufferWidth);
             y =new List<int> {gPH};
             x=new List<int> {gPW};            
-            
+            screen=new Screen();
             base.Initialize();
         }
 
