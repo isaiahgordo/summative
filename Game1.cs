@@ -21,7 +21,8 @@ namespace summative
         MouseState mouseState;
         SpriteFont font;
         Vector2 v,catMovement;
-        float seconds, startTime;        
+        float seconds, startTime;
+        string nulle;
         enum Screen
         {
             Intro,
@@ -72,12 +73,12 @@ namespace summative
             if (screen == Screen.Intro)
                 if (mouseState.LeftButton == ButtonState.Pressed)
                     screen = Screen.Middle;
-                else;
+                else nulle = "";
             else if (screen == Screen.Middle)
                 if (mouseState.RightButton == ButtonState.Pressed)
                     screen = Screen.End;
                 else
-                {                                       
+                {
                     foreach (var cat in myCatR)
                     {
                         my = cat;
@@ -88,13 +89,13 @@ namespace summative
                         if (my.Y < 0 || my.Y > gPH)
                             catMovement.Y *= -1;
                     }
-                    if(seconds>10)
-                        startTime = (float)gameTime.TotalGameTime.TotalSeconds;                    
+                    if (seconds > 10)
+                        startTime = (float)gameTime.TotalGameTime.TotalSeconds;
                 }
             else if (screen == Screen.End)
                 if (mouseState.LeftButton == ButtonState.Pressed)
                     this.Exit();
-                else;
+                else nulle = "";
             // TODO: Add your update logic here
             base.Update(gameTime);
         }
