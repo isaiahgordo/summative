@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.VisualBasic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -12,14 +13,16 @@ namespace summative
         private SpriteBatch _spriteBatch;
         List<Texture2D> myCats;
         Texture2D binkaT, beanT, saraT, shebT,introCatT;
-        Rectangle myCatR,catsR;
+        Rectangle catsR,binkaR,beanR,saraR,shebR,my;
+        List<Rectangle> myCatR;
         Random r;
         List<int> x,y;
-        int gPH, gPW;
+        int gPH, gPW,i;
         Screen screen;
         MouseState mouseState;
         SpriteFont font;
-        Vector2 v;
+        Vector2 v,catMovement;
+        float seconds, startTime;        
         enum Screen
         {
             Intro,
@@ -35,6 +38,7 @@ namespace summative
 
         protected override void Initialize()
         {
+            my = new Rectangle(0, 0, 0, 0);
             // TODO: Add your initialization logic here
             gPH =(_graphics.PreferredBackBufferHeight);
             gPW =(_graphics.PreferredBackBufferWidth);
@@ -42,11 +46,13 @@ namespace summative
             y =new List<int> {gPH};
             x=new List<int> {gPW};
             screen = Screen.Intro;
+            catMovement=new Vector2(r.Next(1,3), r.Next(1, 3));
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
+            i = 0;
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             binkaT = Content.Load<Texture2D>("Binka");
             beanT = Content.Load<Texture2D>("Bean");
@@ -54,7 +60,8 @@ namespace summative
             shebT = Content.Load<Texture2D>("Sheb");
             myCats = new List<Texture2D> { binkaT, beanT, saraT, shebT };
             introCatT = Content.Load<Texture2D>("MyCats");
-            myCatR = new Rectangle(0, 0, 50, 50);
+            binkaR=beanR=saraR=shebR= new Rectangle(0, 0, 100, 100);
+            myCatR=new List<Rectangle> { binkaR,beanR,saraR,shebR };    
             catsR = new Rectangle(0, 0, gPW, gPH);
             // TODO: use this.Content to load your game content here
             font = Content.Load<SpriteFont>("File");
@@ -63,6 +70,7 @@ namespace summative
 
         protected override void Update(GameTime gameTime)
         {
+            seconds = (float)gameTime.TotalGameTime.TotalSeconds-startTime;
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             mouseState = Mouse.GetState();
@@ -73,7 +81,21 @@ namespace summative
             else if (screen == Screen.Middle)
                 if (mouseState.RightButton == ButtonState.Pressed)
                     screen = Screen.End;
-                else;
+                else
+                {                                       
+                    foreach (var cat in myCatR)
+                    {
+                        my = cat;
+                        my.X += (int)catMovement.X;
+                        if (my.X < 0 || my.X > gPW)
+                            catMovement.X *= -1;
+                        my.Y += (int)catMovement.Y;
+                        if (my.Y < 0 || my.Y > gPH)
+                            catMovement.Y *= -1;
+                    }
+                    if(seconds>10)
+                        startTime = (float)gameTime.TotalGameTime.TotalSeconds;                    
+                }
             else if (screen == Screen.End)
                 if (mouseState.LeftButton == ButtonState.Pressed)
                     this.Exit();
@@ -95,13 +117,10 @@ namespace summative
                 _spriteBatch.DrawString(font, "Left Click Right Left Click",v,Color.White);
             }
             if (screen == Screen.Middle)
-            {                
-                foreach (var cat in myCats)
-                {
-                    myCatR.X = r.Next(gPW);
-                    myCatR.Y = r.Next(gPH);
-                    _spriteBatch.Draw(cat, myCatR, Color.White);
-                }
+            {                              
+                foreach (var cat in myCats)                
+                    foreach(var my in myCatR)
+                        _spriteBatch.Draw(cat, my, Color.White);                                          
             }
             if (screen == Screen.End)
             {
