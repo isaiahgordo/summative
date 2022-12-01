@@ -17,7 +17,7 @@ namespace summative
         List<Rectangle> myCatR;
         Random r;
         List<int> x,y;
-        int gPH, gPW,i;
+        int gPH, gPW;
         Screen screen;
         MouseState mouseState;
         SpriteFont font;
@@ -35,7 +35,6 @@ namespace summative
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
-
         protected override void Initialize()
         {
             my = new Rectangle(0, 0, 0, 0);
@@ -49,10 +48,8 @@ namespace summative
             catMovement=new Vector2(r.Next(1,3), r.Next(1, 3));
             base.Initialize();
         }
-
         protected override void LoadContent()
-        {
-            i = 0;
+        {            
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             binkaT = Content.Load<Texture2D>("Binka");
             beanT = Content.Load<Texture2D>("Bean");
@@ -67,7 +64,6 @@ namespace summative
             font = Content.Load<SpriteFont>("File");
             v=new Vector2(gPW/4, gPH / 2);            
         }
-
         protected override void Update(GameTime gameTime)
         {
             seconds = (float)gameTime.TotalGameTime.TotalSeconds-startTime;
@@ -101,14 +97,11 @@ namespace summative
                     this.Exit();
                 else;
             // TODO: Add your update logic here
-
             base.Update(gameTime);
         }
-
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
             if (screen == Screen.Intro)
