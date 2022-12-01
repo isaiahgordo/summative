@@ -38,9 +38,10 @@ namespace summative
             // TODO: Add your initialization logic here
             gPH =(_graphics.PreferredBackBufferHeight);
             gPW =(_graphics.PreferredBackBufferWidth);
+            r=new Random();
             y =new List<int> {gPH};
-            x=new List<int> {gPW};            
-            screen=new Screen();
+            x=new List<int> {gPW};
+            screen = Screen.Intro;
             base.Initialize();
         }
 
@@ -57,14 +58,14 @@ namespace summative
             catsR = new Rectangle(0, 0, gPW, gPH);
             // TODO: use this.Content to load your game content here
             font = Content.Load<SpriteFont>("File");
-            v=new Vector2(gPW/4, gPH / 2);
-            screen = Screen.Intro;
+            v=new Vector2(gPW/4, gPH / 2);            
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            mouseState = Mouse.GetState();
             if (screen == Screen.Intro)
                 if (mouseState.LeftButton == ButtonState.Pressed)
                     screen = Screen.Middle;
@@ -93,12 +94,16 @@ namespace summative
                 _spriteBatch.Draw(introCatT, catsR, Color.White);
                 _spriteBatch.DrawString(font, "Left Click Right Left Click",v,Color.White);
             }
-            else if (screen == Screen.Middle)
-            {
+            if (screen == Screen.Middle)
+            {                
                 foreach (var cat in myCats)
+                {
+                    myCatR.X = r.Next(gPW);
+                    myCatR.Y = r.Next(gPH);
                     _spriteBatch.Draw(cat, myCatR, Color.White);
+                }
             }
-            else if (screen == Screen.End)
+            if (screen == Screen.End)
             {
                 _spriteBatch.Draw(introCatT, catsR, Color.White);
                 _spriteBatch.DrawString(font, "The End", v, Color.Blue);
