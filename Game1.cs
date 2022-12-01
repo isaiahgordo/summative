@@ -117,7 +117,7 @@ namespace summative
             if (screen == Screen.End)
             {
                 _spriteBatch.Draw(introCatT, catsR, Color.White);
-                _spriteBatch.DrawString(font, "The End", v, Color.Blue);
+                _spriteBatch.DrawString(font, "The End by Isaiah", v, Color.Blue);
             }
             _spriteBatch.End();
             base.Draw(gameTime);
