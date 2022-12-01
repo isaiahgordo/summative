@@ -109,10 +109,10 @@ namespace summative
                 _spriteBatch.DrawString(font, "Left Click Right Left Click",v,Color.White);
             }
             if (screen == Screen.Middle)
-            {                              
-                foreach (var cat in myCats)                
+            {                                            
+                foreach (var cat in myCats)
                     foreach(var my in myCatR)
-                        _spriteBatch.Draw(cat, my, Color.White);                                          
+                            _spriteBatch.Draw(cat, my, Color.White);                                                                                                                       
             }
             if (screen == Screen.End)
             {
