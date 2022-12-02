@@ -12,11 +12,10 @@ namespace summative
         private SpriteBatch _spriteBatch;
         List<Texture2D> myCats;
         Texture2D binkaT, beanT, saraT, shebT,introCatT;
-        Rectangle catsR,binkaR,beanR,saraR,shebR,my;
+        Rectangle catsR,binkaR,beanR,saraR,shebR;
         List<Rectangle> myCatR;
-        Random r;
-        List<int> x,y;
-        int gPH, gPW;
+        Random r;         
+        int gPH, gPW, x, y;
         Screen screen;
         MouseState mouseState;
         SpriteFont font;
@@ -36,29 +35,33 @@ namespace summative
             IsMouseVisible = true;
         }
         protected override void Initialize()
-        {
-            my = new Rectangle(0, 0, 0, 0);
+        {            
+            
             // TODO: Add your initialization logic here
             gPH =(_graphics.PreferredBackBufferHeight);
             gPW =(_graphics.PreferredBackBufferWidth);
             r=new Random();
-            y =new List<int> {gPH};
-            x=new List<int> {gPW};
+            y = r.Next(gPH);
+            x=r.Next(gPW);
             screen = Screen.Intro;
             catMovement=new Vector2(r.Next(1,3), r.Next(1, 3));
             base.Initialize();
         }
         protected override void LoadContent()
-        {            
+        {
+            nulle = "";
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             binkaT = Content.Load<Texture2D>("Binka");
             beanT = Content.Load<Texture2D>("Bean");
             saraT = Content.Load<Texture2D>("Sara");
-            shebT = Content.Load<Texture2D>("Sheb");
+            shebT = Content.Load<Texture2D>("Sheb");            
             myCats = new List<Texture2D> { binkaT, beanT, saraT, shebT };
             introCatT = Content.Load<Texture2D>("MyCats");
-            binkaR=beanR=saraR=shebR= new Rectangle(0, 0, 100, 100);
-            myCatR=new List<Rectangle> { binkaR,beanR,saraR,shebR };    
+            binkaR = new Rectangle(r.Next(gPW), r.Next(gPH), 100, 100);
+            beanR= new Rectangle(r.Next(gPW), r.Next(gPH), 100, 100);
+            saraR= new Rectangle(r.Next(gPW), r.Next(gPH), 100, 100);
+            shebR= new Rectangle(r.Next(gPW), r.Next(gPH), 100, 100);
+            myCatR =new List<Rectangle> { binkaR,beanR,saraR,shebR };             
             catsR = new Rectangle(0, 0, gPW, gPH);
             // TODO: use this.Content to load your game content here
             font = Content.Load<SpriteFont>("File");
@@ -69,33 +72,34 @@ namespace summative
             seconds = (float)gameTime.TotalGameTime.TotalSeconds-startTime;
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            var my = binkaR;
             mouseState = Mouse.GetState();
-            if (screen == Screen.Intro)
-                if (mouseState.LeftButton == ButtonState.Pressed)
-                    screen = Screen.Middle;
-                else nulle = "";
-            else if (screen == Screen.Middle)
-                if (mouseState.RightButton == ButtonState.Pressed)
-                    screen = Screen.End;
-                else
-                {
-                    foreach (var cat in myCatR)
+            if (catsR.Contains(mouseState.Position))
+            {
+                if (screen == Screen.Intro)
+                    if (mouseState.LeftButton == ButtonState.Pressed)
+                        screen = Screen.Middle;
+                    else nulle = "";
+                else if (screen == Screen.Middle)
+                    if (mouseState.RightButton == ButtonState.Pressed)
+                        screen = Screen.End;
+                    else
                     {
-                        my = cat;
-                        my.X += (int)catMovement.X;
-                        if (my.X < 0 || my.X > gPW)
-                            catMovement.X *= -1;
-                        my.Y += (int)catMovement.Y;
-                        if (my.Y < 0 || my.Y > gPH)
-                            catMovement.Y *= -1;
+                        Rectangle temp;               
+                        for(int i=0;i<myCatR.Count;i++)
+                        {
+                            temp = myCatR[i];
+                            temp.X += (int)catMovement.X;
+                            if (myCatR[i].Left < 0 || myCatR[i].Right > gPW)
+                                catMovement.X *= -1;
+                            myCatR[i] = temp;
+                        }
                     }
-                    if (seconds > 10)
-                        startTime = (float)gameTime.TotalGameTime.TotalSeconds;
-                }
-            else if (screen == Screen.End)
-                if (mouseState.LeftButton == ButtonState.Pressed)
-                    this.Exit();
-                else nulle = "";
+                else if (screen == Screen.End)
+                    if (mouseState.LeftButton == ButtonState.Pressed)
+                        this.Exit();
+                    else nulle = "";
+            }        
             // TODO: Add your update logic here
             base.Update(gameTime);
         }
@@ -107,18 +111,17 @@ namespace summative
             if (screen == Screen.Intro)
             {
                 _spriteBatch.Draw(introCatT, catsR, Color.White);
-                _spriteBatch.DrawString(font, "Left Click Right Left Click",v,Color.White);
+                _spriteBatch.DrawString(font, "Left Click Right Left Click"+nulle,v,Color.White);
             }
             if (screen == Screen.Middle)
-            {                                            
-                foreach (var cat in myCats)
-                    foreach(var my in myCatR)
-                            _spriteBatch.Draw(cat, my, Color.White);                                                                                                                       
+            {             
+                for(int i=0,t=0; i<myCats.Count&&t<myCatR.Count; i++,t++)                    
+                    _spriteBatch.Draw(myCats[i], myCatR[t], Color.White);                                                                                                                                                                                     
             }
             if (screen == Screen.End)
             {
                 _spriteBatch.Draw(introCatT, catsR, Color.White);
-                _spriteBatch.DrawString(font, "The End by Isaiah", v, Color.Blue);
+                _spriteBatch.DrawString(font, "The End by Isaiah"+nulle, v, Color.Blue);
             }
             _spriteBatch.End();
             base.Draw(gameTime);
