@@ -19,7 +19,8 @@ namespace summative
         Screen screen;
         MouseState mouseState;
         SpriteFont font;
-        Vector2 v,catMovement;
+        Vector2 v;
+        List<Vector2> catMovement;
         float seconds, startTime;
         string nulle;
         enum Screen
@@ -44,7 +45,7 @@ namespace summative
             y = r.Next(gPH);
             x=r.Next(gPW);
             screen = Screen.Intro;
-            catMovement=new Vector2(r.Next(1,3), r.Next(1, 3));
+            catMovement=new List<Vector2> { new Vector2(r.Next(1,4), r.Next(1, 4)), new Vector2(r.Next(1, 4), r.Next(1, 4)) , new Vector2(r.Next(1, 4), r.Next(1, 4)) , new Vector2(r.Next(1, 4), r.Next(1, 4)) };
             base.Initialize();
         }
         protected override void LoadContent()
@@ -85,13 +86,21 @@ namespace summative
                         screen = Screen.End;
                     else
                     {
-                        Rectangle temp;               
+                        Rectangle temp;
+                        Vector2 tempV;
                         for(int i=0;i<myCatR.Count;i++)
                         {
+                            tempV = catMovement[i];
                             temp = myCatR[i];
-                            temp.X += (int)catMovement.X;
+                            temp.X += (int)tempV.X;
                             if (myCatR[i].Left < 0 || myCatR[i].Right > gPW)
-                                catMovement.X *= -1;
+                                tempV.X *= -1;                            
+                            catMovement[i] = tempV;
+                            myCatR[i] = temp;
+                            temp.Y += (int)tempV.Y;
+                            if(myCatR[i].Top < 0 || myCatR[i].Bottom > gPH)
+                                tempV.Y *= -1;                            
+                            catMovement[i] = tempV;
                             myCatR[i] = temp;
                         }
                     }
